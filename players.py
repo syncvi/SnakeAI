@@ -34,8 +34,7 @@ class GeneticPlayer:
 
         # brain selected to play games
         self.current_brain = None
-        self.pop = [self.generate_brain(self.window_size ** 2, self.hidden_size, len(MOVES)) for _ in
-                    range(self.pop_size)]
+        self.pop = [self.generate_brain(self.window_size ** 2, self.hidden_size, len(MOVES)) for _ in range(self.pop_size)]
 
     def generate_brain(self, input_size, hidden_size, output_size):
         # matrix 1 aka layer 1
@@ -53,14 +52,9 @@ class GeneticPlayer:
         output_layer = self.current_brain[2]
 
         # forward prop
-        hidden_result1 = np.array(
-            [math.tanh(np.dot(input_vector, hidden_layer1[i])) for i in range(hidden_layer1.shape[0])] + [
-                1])  # [1] for bias
-        hidden_result2 = np.array(
-            [math.tanh(np.dot(hidden_result1, hidden_layer2[i])) for i in range(hidden_layer2.shape[0])] + [
-                1])  # [1] for bias
-        output_result = np.array(
-            [np.dot(hidden_result2, output_layer[i]) for i in range(output_layer.shape[0])])  # [1] for bias
+        hidden_result1 = np.array([math.tanh(np.dot(input_vector, hidden_layer1[i])) for i in range(hidden_layer1.shape[0])] + [1])  # [1] for bias
+        hidden_result2 = np.array([math.tanh(np.dot(hidden_result1, hidden_layer2[i])) for i in range(hidden_layer2.shape[0])] + [1])  # [1] for bias
+        output_result = np.array([np.dot(hidden_result2, output_layer[i]) for i in range(output_layer.shape[0])])  # [1] for bias
 
         max_index = np.argmax(output_result)
         return MOVES[max_index]
@@ -131,6 +125,7 @@ class GeneticPlayer:
                     print(max_score, "at ID", i)
         # Testing of each brain is complete and they are all ranked
         top_25_indexes = list(np.argsort(scores))[3*(self.pop_size//4):self.pop_size]
+        # DEBUG
         print(scores)
         top_25 = [self.pop[i] for i in top_25_indexes][::-1]
         self.pop = self.reproduce(top_25)
