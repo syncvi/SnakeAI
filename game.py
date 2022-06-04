@@ -68,7 +68,7 @@ class Game:
         # boundaries check
         for i in self.player_ids:
             head_i = self.snakes[i][-1]
-            if head_i[0] >= self.size or head_i[1] >= self.size or head_i[0] < 0 or head_i[0] < 0:
+            if head_i[0] >= self.size or head_i[1] >= self.size or head_i[0] < 0 or head_i[1] < 0:
                 self.player_ids.remove(i)
             else:
                 self.board[head_i[0]][head_i[1]] = i + 1
