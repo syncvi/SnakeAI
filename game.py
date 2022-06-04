@@ -56,8 +56,8 @@ class Game:
             new_square = (snake_i[-1][0] + move_i[0], snake_i[-1][1] + move_i[1])
             snake_i.append(new_square)
 
-        #tail updateing
+        # tail updateing
         for i in self.player_ids:
             head_i = self.snakes[i][-1]
             if head_i not in self.food:
-                self.board[self.snakes] #
+                self.board[self.snakes]
