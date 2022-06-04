@@ -4,7 +4,7 @@ import time as time
 import random as rand
 
 
-#Global
+# Global
 UP = (-1, 0)
 DOWN = (1, 0)
 LEFT = (0, -1)
@@ -19,9 +19,9 @@ FOOD = 99
 
 class Game:
 
-    def __init__(self, size, num_snakes, players, gui=None, display=false, max_turns=100):
+    def __init__(self, size, num_snakes, players, gui=None, display=False, max_turns=100):
         self.size = size
-        self.num_snakes
+        self.num_snakes = num_snakes
         self.players = players
         self.gui = gui
         self.display = display
@@ -56,8 +56,85 @@ class Game:
             new_square = (snake_i[-1][0] + move_i[0], snake_i[-1][1] + move_i[1])
             snake_i.append(new_square)
 
-        # tail updateing
+        # tail updating
         for i in self.player_ids:
             head_i = self.snakes[i][-1]
             if head_i not in self.food:
-                self.board[self.snakes]
+                self.board[self.snakes[i][0][0]][self.snakes[i][0][1]] = EMPTY
+                self.snakes[i].pop(0)
+            else:
+                self.food.remove(head_i)
+
+        # boundaries check
+        for i in self.player_ids:
+            head_i = self.snakes[i][-1]
+            if head_i[0] >= self.size or head_i[1] >= self.size or head_i[0] < 0 or head_i[0] < 0:
+                self.player_ids.remove(i)
+            else:
+                self.board[head_i[0]][head_i[1]] = i + 1
+
+        # collision check
+        for i in self.player_ids:
+            head_i = self.snakes[i][-1]
+            for j in range(self.num_snakes):
+                if i == j:
+                    if head_i in self.snakes[i][:-1]:
+                        self.player_ids.remove(i)
+                else:
+                    if head_i in self.snakes[j]:
+                        self.player_ids.remove(i)
+
+        # food spawning
+        while len(self.food) < self.num_food:
+            x = self.food_xy[self.food_index][0]
+            y = self.food_xy[self.food_index][1]
+            while self.board[x][y] != EMPTY:
+                self.food_index += 1
+                x = self.food_xy[self.food_index][0]
+                y = self.food_xy[self.food_index][1]
+            self.food.append((x,y))
+            self.board[x][y] = FOOD
+            self.food_index += 1
+        return moves
+
+    def play(self, display, termination=False):
+        if display:
+            self.display_board()
+        while True:
+            if termination:
+                for i in self.player_ids:
+                    if len(self.snakes[0]) - self.turn/20 <= 0:
+                        self.player_ids.remove(i)
+                        # remove return if more than 1 snake
+                        return -2
+            if len(self.player_ids) == 0:
+                return -1
+            if self.turn >=self.max_turns:
+                return 0
+            moves = self.move()
+            self.turn +=1
+            if display:
+                for move in moves:
+                    if move == UP:
+                        print("UP")
+                    elif move == RIGHT:
+                        print("RIGHT")
+                    elif move == LEFT:
+                        print("LEFT")
+                    else:
+                        print("DOWN")
+                self.display_board()
+                if self.gui is not None:
+                    self.gui.update()
+                time.sleep(1)
+
+    def display_board(self):
+        for i in range(self.size):
+            for j in range(self.size):
+                if self.board[i][j] == EMPTY:
+                    print("|_", end="")
+                elif self.board[i][j] == FOOD:
+                    print("|#", end="")
+                else:
+                    print("|" + str(int(self.board[i][j])), end="")
+            print("|")
