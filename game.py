@@ -138,3 +138,52 @@ class Game:
                 else:
                     print("|" + str(int(self.board[i][j])), end="")
             print("|")
+
+
+class Gui:
+
+    def __init__(self, game, size):
+        self.game = game
+        self.game.gui = self
+        self.size = size
+
+        self.ratio = self.size / self.game.size
+
+        self.app = tk.Tk()
+        self.canvas = tk.Canvas(self.app, width=self.size, height=self.size)
+        self.canvas.pack()
+
+        for i in range(len(self.game.snakes)):
+            color = '#' + '{0:03X}'.format((i + 1)*500)
+            snake = self.game.snakes[i]
+            self.canvas.create_rectangle(self.ratio*(snake[-1][1]), self.ratio*(snake[-1][0]),
+                                         self.ratio*(snake[-1][1] + 1), self.ratio*(snake[-1][0] + 1), fill=color)
+
+            for j in range(len(snake) - 1):
+                color = '#' + '{0:03X}'.format((i + 1) * 123)
+                self.canvas.create_rectangle(self.ratio * (snake[j][1]), self.ratio * (snake[j][0]),
+                                             self.ratio * (snake[j][1] + 1), self.ratio * (snake[j][0] + 1), fill=color)
+
+        for food in self.game.food:
+            self.canvas.create_rectangle(self.ratio * (food[1]), self.ratio * (food[0]),
+                                         self.ratio * (food[1] + 1), self.ratio * (food[0] + 1), fill='#000000000')
+
+    def update(self):
+        self.canvas.delete("all")
+        for i in range(len(self.game.snakes)):
+            color = '#' + '{0:03X}'.format((i + 1)*500)
+            snake = self.game.snakes[i]
+            self.canvas.create_rectangle(self.ratio*(snake[-1][1]), self.ratio*(snake[-1][0]),
+                                         self.ratio*(snake[-1][1] + 1), self.ratio*(snake[-1][0] + 1), fill=color)
+
+            for j in range(len(snake) - 1):
+                color = '#' + '{0:03X}'.format((i + 1) * 123)
+                self.canvas.create_rectangle(self.ratio * (snake[j][1]), self.ratio * (snake[j][0]),
+                                             self.ratio * (snake[j][1] + 1), self.ratio * (snake[j][0] + 1), fill=color)
+
+        for food in self.game.food:
+            self.canvas.create_rectangle(self.ratio * (food[1]), self.ratio * (food[0]),
+                                         self.ratio * (food[1] + 1), self.ratio * (food[0] + 1), fill='#000000000')
+
+        self.canvas.pack()
+        self.app.update()
