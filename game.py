@@ -60,4 +60,4 @@ class Game:
         for i in self.player_ids:
             head_i = self.snakes[i][-1]
             if head_i not in self.food:
-                self.board[self.snakes]
+                self.board[self.snakes] #
