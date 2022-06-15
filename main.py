@@ -6,7 +6,6 @@ num_snakes = 1
 players = [RandomPlayer(0)]
 
 gui_size = 800
-
 pop_size = 100
 num_generations = 1000
 num_trails = 1
