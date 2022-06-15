@@ -122,6 +122,7 @@ class GeneticPlayer:
         return new_brain
 
     def one_generation(self):
+        # one playthrough of the game, each brain plays one game
         scores = [0 for _ in range(self.pop_size)] # housing the scores of each brain
         # DEBUG
         max_score = 0
@@ -130,10 +131,11 @@ class GeneticPlayer:
                 self.current_brain = self.pop[i]
                 game = Game(self.board_size, 1, [self])
                 outcome = game.play(False, termination=True)
+                # outcome is whatever happes when we play the game
                 score = len(game.snakes[0])  # for single player variation
                 scores[i] += score
                 # DEBUG
-                if outcome == 0:
+                if outcome == 0: # if snake made it the last turn
                     print("Snake", i, "made it to the last turn")
 
                 if score > max_score:
