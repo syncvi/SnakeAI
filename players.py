@@ -110,7 +110,7 @@ class GeneticPlayer:
                 new_pop.append(self.generate_brain(self.window_size ** 2, self.hidden_size, len(MOVES))) # same as init
             #crossover leftover brains
             for _ in range(self.pop_size // 4):
-                new_pop.append(self.crossover(top_25[0], top_25[1]))
+                new_pop.append(self.crossover(top_25[_], top_25[rand.randint(0, len(top_25) - 1)]))
         elif(self.iscrossover == False):
             for _ in range(self.pop_size // 2):
                 new_pop.append(self.generate_brain(self.window_size ** 2, self.hidden_size, len(MOVES)))
