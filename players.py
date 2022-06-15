@@ -18,7 +18,7 @@ class RandomPlayer:
 class GeneticPlayer:
 
     def __init__(self, pop_size, num_generations, num_trails, window_size, hidden_size, board_size,
-                 mutation_chance=0.1, mutation_size=0.1):
+                 mutation_chance=0.1, mutation_size=0.1, iscrossover = False):
         self.pop_size = pop_size
         self.num_generations = num_generations
         self.num_trails = num_trails  # num of games that each brain is going to play
@@ -28,6 +28,7 @@ class GeneticPlayer:
 
         self.mutation_chance = mutation_chance
         self.mutation_size = mutation_size
+        self.iscrossover = iscrossover
 
         # DEBUG
         self.display = False
@@ -58,6 +59,7 @@ class GeneticPlayer:
         # np.dot is a function that multiplies the two matrices
         # math.tanh is a function that takes a number and returns a number between -1 and 1, hyperbolic tangent
         # that function helps us to make the network more robust to different inputs and not have values blow up
+
         hidden_result1 = np.array([math.tanh(np.dot(input_vector, hidden_layer1[i])) for i in range(hidden_layer1.shape[0])] + [1])  # [1] for bias
         hidden_result2 = np.array([math.tanh(np.dot(hidden_result1, hidden_layer2[i])) for i in range(hidden_layer2.shape[0])] + [1])  # [1] for bias
         output_result = np.array([np.dot(hidden_result2, output_layer[i]) for i in range(output_layer.shape[0])])  # [1] for bias
@@ -88,7 +90,7 @@ class GeneticPlayer:
                 elif board[ii][jj] == EMPTY:
                     input_vector[i][j] = 0 # 0 is empty or viable move
                 else:  # it is another snake
-                    input_vector[i][j] = -1 # -1 is another snake
+                    input_vector[i][j] = -2 # -1 is another snake
 
         if self.display: # DEBUG, display the board that snake sees
             print(np.array(input_vector))
@@ -103,9 +105,33 @@ class GeneticPlayer:
             new_brain = self.mutate(brain)
             new_pop.append(new_brain) #adding a mutated copy of the top 25 brains to the new population
         # spawn new random brains for the remaining 50% of the population
-        for _ in range(self.pop_size // 2):
-            new_pop.append(self.generate_brain(self.window_size ** 2, self.hidden_size, len(MOVES))) # same as init
+        if(self.iscrossover):
+            for _ in range(self.pop_size // 4):
+                new_pop.append(self.generate_brain(self.window_size ** 2, self.hidden_size, len(MOVES))) # same as init
+            #crossover leftover brains
+            for _ in range(self.pop_size // 4):
+                new_pop.append(self.crossover(top_25[0], top_25[1]))
+        elif(self.iscrossover == False):
+            for _ in range(self.pop_size // 2):
+                new_pop.append(self.generate_brain(self.window_size ** 2, self.hidden_size, len(MOVES)))
+
+
         return new_pop
+
+    def crossover(self, brain1, brain2):
+        # brain1 and brain2 are the brains that are going to be crossed over
+        # we take the weights of the first half of the first brain and the second half of the second brain
+        # and we put them together to make a new brain
+        # we do this for each layer of the neural network
+        new_brain = []
+        for i in range(len(brain1)):
+            new_brain.append(np.array([[brain1[i][j][k] for k in range(len(brain1[i][j]))] for j in range(len(brain1[i]))]))
+        for i in range(len(brain2)):
+            new_brain.append(np.array([[brain2[i][j][k] for k in range(len(brain2[i][j]))] for j in range(len(brain2[i]))]))
+        # display the new brain
+        return new_brain
+
+
 
     def mutate(self, brain):
         new_brain = []
@@ -135,8 +161,8 @@ class GeneticPlayer:
                 score = len(game.snakes[0])  # for single player variation
                 scores[i] += score
                 # DEBUG
-                if outcome == 0: # if snake made it the last turn
-                    print("Snake", i, "made it to the last turn")
+                # if outcome == 0: # if snake made it the last turn
+                    # print("Snake", i, "made it to the last turn")
 
                 if score > max_score:
                     max_score = score
@@ -166,7 +192,7 @@ class GeneticPlayer:
             game.play(True, termination=True)
             print("Snake length", len(game.snakes[0]))
 
-
+# add mating
 
 
 

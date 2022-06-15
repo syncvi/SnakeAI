@@ -52,6 +52,8 @@ class Game:
         for i in self.player_ids:
             snake_i = self.snakes[i]
             move_i = self.players[i].get_move(self.board, snake_i)
+           
+            
             moves.append(move_i)
             new_square = (snake_i[-1][0] + move_i[0], snake_i[-1][1] + move_i[1])
             snake_i.append(new_square)
