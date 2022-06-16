@@ -15,5 +15,5 @@ board_size = 10
 
 
 gen_player = GeneticPlayer(pop_size, num_generations, num_trails, window_size, hidden_size, board_size,
-                           mutation_chance=0.7, mutation_size=0.1, iscrossover=True)
+                           mutation_chance=0.3, mutation_size=0.1, iscrossover=True)
 gen_player.evolve_pop()

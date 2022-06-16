@@ -90,7 +90,7 @@ class GeneticPlayer:
                 elif board[ii][jj] == EMPTY:
                     input_vector[i][j] = 0 # 0 is empty or viable move
                 else:  # it is another snake
-                    input_vector[i][j] = -2 # -1 is another snake
+                    input_vector[i][j] = -1 # -1 is another snake
 
         if self.display: # DEBUG, display the board that snake sees
             print(np.array(input_vector))
@@ -119,19 +119,13 @@ class GeneticPlayer:
         return new_pop
 
     def crossover(self, brain1, brain2):
-        # brain1 and brain2 are the brains that are going to be crossed over
-        # we take the weights of the first half of the first brain and the second half of the second brain
-        # and we put them together to make a new brain
-        # we do this for each layer of the neural network
+       # crossing over the brains by taking a random part of each brain and combining them
         new_brain = []
         for i in range(len(brain1)):
-            new_brain.append(np.array([[brain1[i][j][k] for k in range(len(brain1[i][j]))] for j in range(len(brain1[i]))]))
-        for i in range(len(brain2)):
-            new_brain.append(np.array([[brain2[i][j][k] for k in range(len(brain2[i][j]))] for j in range(len(brain2[i]))]))
-        # display the new brain
+            new_brain.append(np.array([[rand.choice([brain1[i][j][k], brain2[i][j][k]]) for k in range(len(brain1[i][j]))] for j in range(len(brain1[i]))]))
         return new_brain
 
-
+        return new_brain
 
     def mutate(self, brain):
         new_brain = []
