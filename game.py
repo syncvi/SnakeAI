@@ -131,8 +131,8 @@ class Game:
                 self.display_board()
                 if self.gui is not None:
                     self.gui.update()
-                # wait for 0.25 seconds
-                time.sleep(0.25)
+                # wait for 0.5 seconds
+                time.sleep(0.5)
 
     def display_board(self):
         for i in range(self.size):
