@@ -125,8 +125,6 @@ class GeneticPlayer:
             new_brain.append(np.array([[rand.choice([brain1[i][j][k], brain2[i][j][k]]) for k in range(len(brain1[i][j]))] for j in range(len(brain1[i]))]))
         return new_brain
 
-        return new_brain
-
     def mutate(self, brain):
         new_brain = []
         for layer in brain:
